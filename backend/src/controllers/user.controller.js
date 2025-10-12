@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import FriendRequest from "../models/FriendRequest.js";
+
 export const getRecommendedUsers = async (req, res) => {
   try {
     const currentUserId = req.user.id;
@@ -131,4 +132,51 @@ export const acceptFriendRequest = async (req, res) => {
     return res.status(400).json({ message: "internal server error" });
   }
 };
+
+// get all friendrequests
+export const getAllFriendRequests = async (req, res) => {
+  try {
+    // this will get all request sent to the users which are yet to accept (status:"pending")
+    const incommingReqs = await FriendRequest.find({
+      recipient: req.user.id,
+      status: "pending",
+    }).populate(
+      "sender",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
+
+    // this will get all accepted req for the current users (status:"accepted")
+    const acceptedReqs = await FriendRequest.find({
+      recipient: req.user.id,
+      status: "accepted",
+    }).populate(
+      "sender",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
+
+    res.status(200).json({ incommingReqs, acceptedReqs });
+  } catch (err) {
+    console.log("error while gettingAll friendReqs", err.message);
+    return res.status(400).json({ message: "internal server error" });
+  }
+};
+
+// this will get all sent friend reqs
+
+export const getAllSentReqs = async (req, res) => {
+  try {
+    const outgoingRequests = await FriendRequest.find({
+      sender: req.user.id,
+      status: "pending",
+    }).populate(
+      "recipient",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
+
+    return res.status(200).json(outgoingRequests);
+  } catch (err) {
+    console.log("error while getting all sentReqa", err.message);
+    return res.status(400).json({ message: "internal server error" });
+  }
  
+};
