@@ -6,8 +6,8 @@ function App() {
     <>
       <div className="bg-red-400 h-screen">
         <h1 className="text-black">hello world</h1>
+        <button className="btn btn-active btn-primary">Primary</button>
       </div>
-       
     </>
   );
 }
