@@ -9,8 +9,19 @@ import ChatPage from "./pages/ChatPage";
 import CallPage from "./pages/CallPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import toast, { Toaster } from "react-hot-toast";
+import { axiosInstance } from "./lib/axios";
+import { useQuery } from "@tanstack/react-query";
 
 function App() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => {
+      const res = axiosInstance.get("/auth/me");
+      return res.data;
+    },
+  });
+
+  console.log(data);
   return (
     <div className=" h-screen" data-theme="night">
       <Routes>
