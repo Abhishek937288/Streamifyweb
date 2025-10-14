@@ -51,11 +51,7 @@ export const signup = async (req, res) => {
 
   genAndSetToken(newUser._id, res);
 
-  return res.status(200).json({
-    data: newUser,
-    success: true,
-    message: "New user Created succesfully",
-  });
+  res.status(201).json({ success: true, user: newUser });
 };
 
 export const login = async (req, res) => {
