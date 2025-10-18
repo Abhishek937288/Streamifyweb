@@ -8,7 +8,7 @@ const useAuthUser = () => {
     queryFn : getUser,
      retry: false
  })
- return {isLoading: authUser.isLoading , authUser : authUser.data?.user}
+ return {isLoading: authUser.isLoading , authUser : authUser.data?.user }
 }
 
 export default useAuthUser;
