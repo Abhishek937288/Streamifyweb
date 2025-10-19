@@ -83,7 +83,7 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("token", { httpOnly: true, maxAge: 0 });
+  res.clearCookie("jwt", { httpOnly: true, maxAge: 0 });
   return res
     .status(200)
     .json({ data: null, success: true, message: "User Logout successfully" });
