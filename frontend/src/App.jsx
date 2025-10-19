@@ -9,10 +9,10 @@ import ChatPage from "./pages/ChatPage";
 import CallPage from "./pages/CallPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import toast, { Toaster } from "react-hot-toast";
-import { axiosInstance } from "./lib/axios";
-import { useQuery } from "@tanstack/react-query";
+
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuth.User";
+import Layout from "./components/Layout";
 
 function App() {
   const { isLoading, authUser } = useAuthUser();
@@ -24,13 +24,15 @@ function App() {
     return <PageLoader />;
   }
   return (
-    <div className=" h-screen" data-theme="night">
+    <div className=" h-screen" data-theme="forest">
       <Routes>
         <Route
           path="/"
           element={
             isAuthinticated && isOnboarded ? (
-              <HomePage />
+              <Layout showSidebar={true}>
+                <HomePage />
+              </Layout>
             ) : (
               <Navigate to={!isAuthinticated ? "/login" : "/onboarding"} />
             )
