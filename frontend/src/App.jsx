@@ -17,7 +17,7 @@ import { useThemeStore } from "./store/useThemeStore";
 
 function App() {
   const { isLoading, authUser } = useAuthUser();
-  const {theme} = useThemeStore();
+  const { theme } = useThemeStore();
 
   const isAuthinticated = Boolean(authUser);
   const isOnboarded = Boolean(authUser?.isOnboarded);
@@ -64,7 +64,9 @@ function App() {
           path="/notifications"
           element={
             isAuthinticated && isOnboarded ? (
-              <NotificationsPage />
+              <Layout showSidebar={true}>
+                <NotificationsPage />
+              </Layout>
             ) : (
               <Navigate to={!isAuthinticated ? "/login" : "/onboarding"} />
             )

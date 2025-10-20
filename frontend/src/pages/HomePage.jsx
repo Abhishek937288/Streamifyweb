@@ -7,7 +7,12 @@ import {
   sendFriendRequest,
 } from "../lib/api";
 import { Link } from "react-router";
-import { UsersIcon, MapPinIcon ,CheckCircleIcon,UserPlusIcon } from "lucide-react";
+import {
+  UsersIcon,
+  MapPinIcon,
+  CheckCircleIcon,
+  UserPlusIcon,
+} from "lucide-react";
 import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NofriendsFound from "../components/NofriendsFound";
 import { capitialize } from "../lib/utils";
@@ -148,26 +153,25 @@ const HomePage = () => {
                     {user.bio && (
                       <p className="text-sm opacity-70">{user.bio}</p>
                     )}
-                     <button
-                        className={`btn w-full mt-2 ${
-                          hasRequestBeenSent ? "btn-disabled" : "btn-primary"
-                        } `}
-                        onClick={() => sendRequestMutation(user._id)}
-                        disabled={hasRequestBeenSent || isPending}
-                      >
-                        {hasRequestBeenSent ? (
-                          <>
-                            <CheckCircleIcon className="size-4 mr-2" />
-                            Request Sent
-                          </>
-                        ) : (
-                          <>
-                            <UserPlusIcon className="size-4 mr-2" />
-                            Send Friend Request
-                          </>
-                        )}
-                      </button>
-
+                    <button
+                      className={`btn w-full mt-2 ${
+                        hasRequestBeenSent ? "btn-disabled" : "btn-primary"
+                      } `}
+                      onClick={() => sendRequestMutation(user._id)}
+                      disabled={hasRequestBeenSent || isPending}
+                    >
+                      {hasRequestBeenSent ? (
+                        <>
+                          <CheckCircleIcon className="size-4 mr-2" />
+                          Request Sent
+                        </>
+                      ) : (
+                        <>
+                          <UserPlusIcon className="size-4 mr-2" />
+                          Send Friend Request
+                        </>
+                      )}
+                    </button>
                   </div>
                 );
               })}
@@ -180,5 +184,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-
