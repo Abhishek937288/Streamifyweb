@@ -7,9 +7,9 @@ export const getRecommendedUsers = async (req, res) => {
     const currentUser = req.user;
     const recommendUsers = await User.find({
       $and: [
-        { _id: { $ne: currentUserId } }, // the userId which is not equal to
-        //current userId to exlude current user
-        { $ne: currentUser.friends }, //  to exlude currentusers friends
+       { _id: { $ne: currentUserId } }, //exclude current user
+        { _id: { $nin: currentUser.friends } }, // exclude current user's friends
+        { isOnboarded: true }
       ],
     });
 
@@ -178,5 +178,4 @@ export const getAllSentReqs = async (req, res) => {
     console.log("error while getting all sentReqa", err.message);
     return res.status(400).json({ message: "internal server error" });
   }
- 
 };
