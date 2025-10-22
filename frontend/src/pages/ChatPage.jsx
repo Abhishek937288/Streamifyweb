@@ -16,6 +16,7 @@ import {
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
+import CallButton from "../components/CallButton";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -73,11 +74,38 @@ const ChatPage = () => {
       }
     };
     initChat();
-  }, []);
+  }, [tokenData , authUser , targetUserId]);
+
+  const handleVideoCall = ()=>{
+    if(channel){
+      const callUrl = `${window.location.origin}/call/${channel.id}`
+      channel.sendMessage({
+        text :`I ve started the video call. join here : ${callUrl}`
+      })
+      toast.success("start your video call with this link")
+    }
+
+  }
 
   if(loading || !chatClient || !channel) return <ChatLoader/>
 
-  return <div>ChatPage</div>;
+  return <div className="h-[93vh]">
+    <Chat client={chatClient}>
+      <Channel channel={channel}>
+     <div className="w-full relative">
+      <CallButton handleVideoCall={handleVideoCall}/>
+        <Window>
+              <ChannelHeader />
+              <MessageList />
+              <MessageInput focus />
+            </Window>
+     </div>
+     <Thread/>
+      </Channel>
+
+    </Chat>
+    
+  </div>;
 };
 
 export default ChatPage;

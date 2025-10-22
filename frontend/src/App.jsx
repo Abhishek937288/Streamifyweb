@@ -85,7 +85,7 @@ function App() {
           }
         />
         <Route
-          path="/call"
+          path="/call/:id"
           element={
             isAuthinticated && isOnboarded ? (
               <CallPage />
