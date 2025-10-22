@@ -5,5 +5,6 @@ import { getStreamToken } from "../controllers/chat.controller.js";
 const router = Router();
 
 router.get("/token", protectRoute, getStreamToken);
+// to start chat and video call streamtoken is needed 
 
 export default router;
