@@ -8,12 +8,12 @@ import NotificationsPage from "./pages/NotificationsPage";
 import ChatPage from "./pages/ChatPage";
 import CallPage from "./pages/CallPage";
 import OnboardingPage from "./pages/OnboardingPage";
-import toast, { Toaster } from "react-hot-toast";
 
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuth.User";
 import Layout from "./components/Layout";
 import { useThemeStore } from "./store/useThemeStore";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { isLoading, authUser } = useAuthUser();
@@ -26,7 +26,7 @@ function App() {
     return <PageLoader />;
   }
   return (
-    <div className=" h-screen" data-theme={theme}>
+    <div className=" h-full" data-theme={theme}>
       <Routes>
         <Route
           path="/"
@@ -72,6 +72,8 @@ function App() {
             )
           }
         />
+
+
         <Route
           path="/chat/:id"
           element={

@@ -13,8 +13,7 @@ import {
   SpeakerLayout,
   StreamTheme,
   CallingState,
-  useCallStateHooks,
-  name,
+
 } from "@stream-io/video-react-sdk";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;

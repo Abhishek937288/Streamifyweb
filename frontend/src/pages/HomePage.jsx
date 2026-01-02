@@ -44,7 +44,7 @@ const HomePage = () => {
   const {
     mutate: sendRequestMutation,
     isPending,
-    error,
+    
   } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => {
