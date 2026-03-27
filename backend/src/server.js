@@ -33,18 +33,24 @@ app.use("/api/chat", chatRoutes);
 app.get("/health", (req, res) => {
   res.send("backend is working");
 });
-if (process.env.NODE_ENV === "production") {
-  //This tells Express to serve all the static files (HTML, CSS, JS, images, etc.)
-  //from the folder frontend/dist
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-    //If someone visits any route (like /dashboard, /chat/123, etc.) that Express doesn’t already know —
-    //send them the index.html file.
+
+connectDb();
+
+// if (process.env.NODE_ENV === "production") {
+//   //This tells Express to serve all the static files (HTML, CSS, JS, images, etc.)
+//   //from the folder frontend/dist
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+//     //If someone visits any route (like /dashboard, /chat/123, etc.) that Express doesn’t already know —
+//     //send them the index.html file.
+//   });
+// }
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`server is running on port ${port}`);
   });
 }
 
-app.listen(port, () => {
-  console.log(`server is running on port ${port}`);
-  connectDb();
-});
+export default app;
