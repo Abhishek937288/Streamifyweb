@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: frontendUrl,
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -30,6 +30,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 
+app.get("/health", (req, res) => {
+  res.send("backend is working");
+});
 if (process.env.NODE_ENV === "production") {
   //This tells Express to serve all the static files (HTML, CSS, JS, images, etc.)
   //from the folder frontend/dist
@@ -37,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
     //If someone visits any route (like /dashboard, /chat/123, etc.) that Express doesn’t already know —
-//send them the index.html file.
+    //send them the index.html file.
   });
 }
 
