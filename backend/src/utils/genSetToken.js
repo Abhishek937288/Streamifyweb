@@ -5,10 +5,11 @@ const genAndSetToken = async (id, res) => {
   const token = jwt.sign({ id }, secretKey, { expiresIn: "15d" });
 
   res.cookie("jwt", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "none",   // ✅ allow cross-origin
-    secure: true,       // ✅ required for HTTPS (Vercel)
+    secure: true,
+    sameSite: "lax",
+    path:"/" // ✅ now works
+    // ❌ remove domain
   });
 };
 

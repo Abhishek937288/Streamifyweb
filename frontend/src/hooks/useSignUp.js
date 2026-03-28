@@ -6,8 +6,8 @@ const useSignUp = () => {
   const queryClient = useQueryClient();
   const signupUser = useMutation({
     mutationFn: signup,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ["authUser"] });
     },
   });
   return {
