@@ -1,8 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://streamifyweb-iota.vercel.app/api/:path*"
-    }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "src/api/index.js" }
   ]
 }
