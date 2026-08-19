@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
 import { signup } from "../lib/api";
 
 const useSignUp = () => {
@@ -7,7 +6,14 @@ const useSignUp = () => {
   const signupUser = useMutation({
     mutationFn: signup,
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["authUser"] });
+      try {
+        await queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      } catch (err) {
+        console.error("Error refreshing auth state after signup:", err);
+      }
+    },
+    onError: (err) => {
+      console.error("Signup failed:", err);
     },
   });
   return {

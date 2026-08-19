@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import useLogin from "../hooks/useLogin.js";
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
+import { useThemeStore } from "../store/useThemeStore.js";
+import ThemeSelector from "../components/ThemeSelector.jsx";
 
 const LoginPage = () => {
   const { isPending, error, loginMutation } = useLogin();
+  const { theme } = useThemeStore();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -17,46 +20,49 @@ const LoginPage = () => {
 
   return (
     <div
-      className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
-      data-theme="forest"
+      className="min-h-screen flex items-center justify-center bg-base-200 px-4 py-8"
+      data-theme={theme}
     >
-      <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+      <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-base-100 rounded-2xl shadow-2xl overflow-hidden border border-base-300">
         {/* LOGIN FORM SECTION */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
+        <div className="w-full lg:w-1/2 p-8 sm:p-10 lg:p-12 flex flex-col">
           {/* LOGO */}
-          <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheelIcon className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
-              Streamify
-            </span>
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center justify-start gap-2.5">
+              <ShipWheelIcon className="size-8 text-primary" />
+              <span className="text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wide">
+                Streamify
+              </span>
+            </div>
+            <ThemeSelector />
           </div>
 
           {/* ERROR MESSAGE DISPLAY */}
           {error && (
-            <div className="alert alert-error mb-4">
-              <span>{error.response.data.message}</span>
+            <div className="alert alert-error mb-6 rounded-lg">
+              <span className="text-sm">{error?.response?.data?.message || error?.message || "Something went wrong"}</span>
             </div>
           )}
 
           <div className="w-full">
             <form onSubmit={handleLogin}>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-semibold">Welcome Back</h2>
-                  <p className="text-sm opacity-70">
-                    Sign in to your account to continue your language journey
+                  <h2 className="text-2xl font-bold text-base-content mb-1">Welcome Back</h2>
+                  <p className="text-sm text-base-content/60">
+                    Sign in to continue your language learning journey
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3">
-                  <div className="form-control w-full space-y-2">
-                    <label className="label">
-                      <span className="label-text">Email</span>
+                <div className="flex flex-col gap-4">
+                  <div className="form-control w-full">
+                    <label className="label py-1.5">
+                      <span className="label-text font-medium text-sm text-base-content/80">Email</span>
                     </label>
                     <input
                       type="email"
                       placeholder="hello@example.com"
-                      className="input input-bordered w-full"
+                      className="input input-bordered w-full h-11 rounded-lg focus:input-primary transition-colors"
                       value={loginData.email}
                       onChange={(e) =>
                         setLoginData({ ...loginData, email: e.target.value })
@@ -65,14 +71,14 @@ const LoginPage = () => {
                     />
                   </div>
 
-                  <div className="form-control w-full space-y-2">
-                    <label className="label">
-                      <span className="label-text">Password</span>
+                  <div className="form-control w-full">
+                    <label className="label py-1.5">
+                      <span className="label-text font-medium text-sm text-base-content/80">Password</span>
                     </label>
                     <input
                       type="password"
                       placeholder="••••••••"
-                      className="input input-bordered w-full"
+                      className="input input-bordered w-full h-11 rounded-lg focus:input-primary transition-colors"
                       value={loginData.password}
                       onChange={(e) =>
                         setLoginData({ ...loginData, password: e.target.value })
@@ -83,12 +89,12 @@ const LoginPage = () => {
 
                   <button
                     type="submit"
-                    className="btn btn-primary w-full"
+                    className="btn btn-primary w-full h-11 rounded-lg font-semibold text-base mt-1"
                     disabled={isPending}
                   >
                     {isPending ? (
                       <>
-                        <span className="loading loading-spinner loading-xs"></span>
+                        <span className="loading loading-spinner loading-sm"></span>
                         Signing in...
                       </>
                     ) : (
@@ -96,12 +102,12 @@ const LoginPage = () => {
                     )}
                   </button>
 
-                  <div className="text-center mt-4">
-                    <p className="text-sm">
+                  <div className="text-center pt-1">
+                    <p className="text-sm text-base-content/60">
                       Don't have an account?{" "}
                       <Link
                         to="/signup"
-                        className="text-primary hover:underline"
+                        className="text-primary font-semibold hover:underline"
                       >
                         Create one
                       </Link>
@@ -114,26 +120,20 @@ const LoginPage = () => {
         </div>
 
         {/* IMAGE SECTION */}
-        <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
-          <div className="max-w-md p-8">
-            {/* Illustration */}
-            <div className="relative aspect-square max-w-sm mx-auto">
-              <img
-                src="/i.png"
-                alt="Language connection illustration"
-                className="w-full h-full"
-              />
-            </div>
-
-            <div className="text-center space-y-3 mt-6">
-              <h2 className="text-xl font-semibold">
-                Connect with language partners worldwide
-              </h2>
-              <p className="opacity-70">
-                Practice conversations, make friends, and improve your language
-                skills together
-              </p>
-            </div>
+        <div className="hidden lg:flex w-full lg:w-1/2 relative items-center justify-center overflow-hidden bg-primary/10">
+          <img
+            src="/i.png"
+            alt="Language connection illustration"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div className="relative z-10 text-center space-y-3 p-10">
+            <h2 className="text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              Connect with language partners worldwide
+            </h2>
+            <p className="text-sm text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] leading-relaxed max-w-sm mx-auto">
+              Practice conversations, make friends, and improve your language skills together
+            </p>
           </div>
         </div>
       </div>

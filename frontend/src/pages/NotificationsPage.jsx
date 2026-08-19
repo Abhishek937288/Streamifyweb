@@ -18,13 +18,11 @@ const NotificationsPage = () => {
   const {
     mutate: acceptRequestMutation,
     isPending,
-    error,
   } = useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendRequests"] }); // to refetch the all friendrequests
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
-      // to refetch the friends
     },
   });
 
@@ -60,16 +58,17 @@ const NotificationsPage = () => {
                         key={request._id}
                       >
                         <div className="card-body p-4">
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                              <div className="avatar w-14 h-14 rounded-full bg-base-300">
+                              <div className="avatar w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-base-300 flex-shrink-0">
                                 <img
                                   src={request.sender.profilePic}
                                   alt={request.sender.fullName}
+                                  className="w-full h-full object-cover"
                                 />
                               </div>
-                              <div>
-                                <h3 className="font-semibold">
+                              <div className="min-w-0">
+                                <h3 className="font-semibold truncate">
                                   {request.sender.fullName}
                                 </h3>
                                 <div className="flex flex-wrap gap-1.5 mt-1">
@@ -83,7 +82,7 @@ const NotificationsPage = () => {
                               </div>
                             </div>
                             <button
-                              className="btn btn-primary btn-sm"
+                              className="btn btn-primary btn-sm w-full sm:w-auto flex-shrink-0"
                               onClick={() => {
                                 acceptRequestMutation(request._id);
                               }}
@@ -114,14 +113,15 @@ const NotificationsPage = () => {
                     >
                       <div className="card-body p-4">
                         <div className="flex items-start gap-3">
-                          <div className="avatar mt-1 size-10 rounded-full">
+                          <div className="avatar mt-1 size-10 rounded-full flex-shrink-0">
                             <img
                               src={notification.recipient.profilePic}
                               alt={notification.recipient.fullName}
+                              className="w-full h-full object-cover"
                             />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold truncate">
                               {notification.recipient.fullName}
                             </h3>
                             <p className="text-sm my-1">
@@ -133,7 +133,7 @@ const NotificationsPage = () => {
                               Recently
                             </p>
                           </div>
-                          <div className="badge badge-success">
+                          <div className="badge badge-success flex-shrink-0">
                             <MessageSquareIcon className="h-3 w-3 mr-1" />
                             New Friend
                           </div>

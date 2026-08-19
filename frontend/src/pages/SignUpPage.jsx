@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { ShipWheel } from "lucide-react";
 import { Link } from "react-router";
 import useSignUp from "../hooks/useSignUp.js";
+import { useThemeStore } from "../store/useThemeStore.js";
+import ThemeSelector from "../components/ThemeSelector.jsx";
 
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
@@ -11,6 +13,7 @@ const SignUpPage = () => {
   });
 
   const { isPending, error, signupMutation } = useSignUp();
+  const { theme } = useThemeStore();
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -18,42 +21,47 @@ const SignUpPage = () => {
   };
   return (
     <div
-      className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
-      data-theme="forest"
+      className="min-h-screen flex items-center justify-center bg-base-200 px-4 py-8"
+      data-theme={theme}
     >
-      <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+      <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-base-100 rounded-2xl shadow-2xl overflow-hidden border border-base-300">
         {/* left side*/}
-        <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
+        <div className="w-full lg:w-1/2 p-8 sm:p-10 lg:p-12 flex flex-col">
           {/* logo*/}
-          <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheel className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
-              Streamify
-            </span>
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center justify-start gap-2.5">
+              <ShipWheel className="size-8 text-primary" />
+              <span className="text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wide">
+                Streamify
+              </span>
+            </div>
+            <ThemeSelector />
           </div>
 
           {/* Error message*/}
           {error && (
-            <div className="alert alert-error mb-4">
-              <span>{error.response.data.message}</span>
+            <div className="alert alert-error mb-6 rounded-lg">
+              <span className="text-sm">{error?.response?.data?.message || error?.message || "Something went wrong"}</span>
             </div>
           )}
           <div className="w-full">
             <form onSubmit={handleSignup}>
-              <div className="space-y-4">
-                <div className="">
-                  <h2 className="text-xl font-semibold">Create an Account</h2>
-                  <p className="text:sm opacity-70">
-                    join Streamify and start your language learnign adventure!
+              <div className="space-y-5">
+                <div>
+                  <h2 className="text-2xl font-bold text-base-content mb-1">Create an Account</h2>
+                  <p className="text-sm text-base-content/60">
+                    Join Streamify and start your language learning adventure!
                   </p>
                 </div>
                 <div className="space-y-4">
                   <div className="form-control w-full">
-                    <label className="label-text">Full Name</label>
+                    <label className="label py-1.5">
+                      <span className="label-text font-medium text-sm text-base-content/80">Full Name</span>
+                    </label>
                     <input
                       type="text"
-                      placeholder="Abhi man..."
-                      className="input input-bordered w-full"
+                      placeholder="Abhi Man..."
+                      className="input input-bordered w-full h-11 rounded-lg focus:input-primary transition-colors"
                       value={signupData.fullName}
                       onChange={(e) =>
                         setSignupData({
@@ -65,11 +73,13 @@ const SignUpPage = () => {
                     />
                   </div>
                   <div className="form-control w-full">
-                    <label className="label-text">Email</label>
+                    <label className="label py-1.5">
+                      <span className="label-text font-medium text-sm text-base-content/80">Email</span>
+                    </label>
                     <input
                       type="email"
-                      placeholder="something@mail.com"
-                      className="input input-bordered w-full"
+                      placeholder="you@example.com"
+                      className="input input-bordered w-full h-11 rounded-lg focus:input-primary transition-colors"
                       value={signupData.email}
                       onChange={(e) =>
                         setSignupData({
@@ -81,11 +91,13 @@ const SignUpPage = () => {
                     />
                   </div>
                   <div className="form-control w-full">
-                    <label className="label-text">Password</label>
+                    <label className="label py-1.5">
+                      <span className="label-text font-medium text-sm text-base-content/80">Password</span>
+                    </label>
                     <input
                       type="password"
-                      placeholder="****"
-                      className="input input-bordered w-full"
+                      placeholder="Min. 6 characters"
+                      className="input input-bordered w-full h-11 rounded-lg focus:input-primary transition-colors"
                       value={signupData.password}
                       onChange={(e) =>
                         setSignupData({
@@ -95,43 +107,44 @@ const SignUpPage = () => {
                       }
                       required
                     />
-                    <p className="text-xs opacity-70 mt-1">
-                      Password must be at least 6 characters long
+                    <p className="text-xs text-base-content/50 mt-1.5">
+                      Must be at least 6 characters long
                     </p>
                   </div>
                   <div className="form-control">
-                    <label className="label cursor-pointer justify-start gap-2">
+                    <label className="label cursor-pointer justify-start gap-2.5 py-2">
                       <input
                         type="checkbox"
-                        className="checkbox checkbox-sm"
+                        className="checkbox checkbox-sm checkbox-primary rounded"
                         required
                       />
-                      <span className="text-xs leading-tight">
+                      <span className="text-xs text-base-content/70 leading-snug">
                         I agree to the{" "}
-                        <span className="text-primary hover:underline">
-                          terms of service
+                        <span className="text-primary font-medium hover:underline cursor-pointer">
+                          Terms of Service
                         </span>{" "}
                         and{" "}
-                        <span className="text-primary hover:underline">
-                          privacy policy
-                        </span>{" "}
+                        <span className="text-primary font-medium hover:underline cursor-pointer">
+                          Privacy Policy
+                        </span>
                       </span>
                     </label>
                   </div>
                 </div>
-                <button className="btn btn-primary w-full" type="submit">
+                <button className="btn btn-primary w-full h-11 rounded-lg font-semibold text-base" type="submit" disabled={isPending}>
                   {isPending ? (
                     <>
-                      <span className="loading loading-spinner  loading-xs"></span>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Creating Account...
                     </>
                   ) : (
                     "Create Account"
                   )}
                 </button>
-                <div className="text-center mt-4">
-                  <p className="text-sm">
+                <div className="text-center pt-1">
+                  <p className="text-sm text-base-content/60">
                     Already have an account?{" "}
-                    <Link to="/login" className="text-primary hover:underline">
+                    <Link to="/login" className="text-primary font-semibold hover:underline">
                       Sign in
                     </Link>
                   </p>
@@ -141,26 +154,20 @@ const SignUpPage = () => {
           </div>
         </div>
         {/* right side */}
-        <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
-          <div className="max-w-md p-8">
-            {/* Illustration */}
-            <div className="relative aspect-square max-w-sm mx-auto">
-              <img
-                src="/i.png"
-                alt="Language connection illustration"
-                className="w-full h-full"
-              />
-            </div>
-
-            <div className="text-center space-y-3 mt-6">
-              <h2 className="text-xl font-semibold">
-                Connect with language partners worldwide
-              </h2>
-              <p className="opacity-70">
-                Practice conversations, make friends, and improve your language
-                skills together
-              </p>
-            </div>
+        <div className="hidden lg:flex w-full lg:w-1/2 relative items-center justify-center overflow-hidden bg-primary/10">
+          <img
+            src="/i.png"
+            alt="Language connection illustration"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div className="relative z-10 text-center space-y-3 p-10">
+            <h2 className="text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              Connect with language partners worldwide
+            </h2>
+            <p className="text-sm text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] leading-relaxed max-w-sm mx-auto">
+              Practice conversations, make friends, and improve your language skills together
+            </p>
           </div>
         </div>
       </div>

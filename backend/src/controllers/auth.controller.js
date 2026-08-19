@@ -9,7 +9,7 @@ export const signup = async (req, res) => {
       .status(400)
       .json({ data: null, success: false, message: "All fields required" });
   }
-  if (password.length <= 6) {
+  if (password.length < 6) {
     return res.status(400).json({
       dataL: null,
       success: false,
@@ -28,8 +28,7 @@ export const signup = async (req, res) => {
       .status(400)
       .json({ data: null, success: false, message: "Mail already taken" });
   }
-  const randomNo = Math.floor(Math.random() * 100) + 1; // no from 1 to 100
-  const randomAvatar = `https://avatar.iran.liara.run/public/${randomNo}.png`;
+  const randomAvatar = `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(email)}`;
 
   const newUser = await User.create({
     email,
@@ -83,7 +82,13 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("jwt", { httpOnly: true, maxAge: 0 });
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
   return res
     .status(200)
     .json({ data: null, success: true, message: "User Logout successfully" });
@@ -136,7 +141,7 @@ export const onboard = async (req, res) => {
     } catch (err) {
       console.log(
         "Error updating Stream user during onboarding:",
-        streamError.message
+        err.message
       );
     }
     res.status(200).json({ success: true, user: updatedUser });

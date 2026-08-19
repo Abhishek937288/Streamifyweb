@@ -42,7 +42,7 @@ const CallPage = () => {
         console.log("Initilizing stream video client ...");
         const user = {
           id: authUser._id,
-          name: authUser.name,
+          name: authUser.fullName,
           image: authUser.profilePic,
         };
         const videoClient = new StreamVideoClient({
@@ -66,8 +66,8 @@ const CallPage = () => {
   }, [tokenData, authUser, callId]);
   if (isLoading || isConnecting) return <PageLoader />;
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div className="relative">
+    <div className="h-screen flex flex-col items-center justify-center p-0 sm:p-4">
+      <div className="relative w-full h-full sm:w-auto sm:h-auto sm:max-w-5xl sm:aspect-video">
         {client && call ? (
           <StreamVideo client={client}>
             <StreamCall call={call}>
@@ -76,7 +76,7 @@ const CallPage = () => {
           </StreamVideo>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p>Could not initilize call . please refresh or try again later.</p>
+            <p className="text-sm sm:text-base px-4">Could not initialize call. Please refresh or try again later.</p>
           </div>
         )}
       </div>

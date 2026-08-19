@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { comeleteOnBoarding } from "../lib/api.js";
 import { LANGUAGES } from "../constants/index.js";
 import {
+  CameraIcon,
   LoaderIcon,
   MapPinIcon,
   ShipWheelIcon,
@@ -28,7 +29,6 @@ const OnboardingPage = () => {
   const {
     mutate: onboardingMutation,
     isPending,
-    error,
   } = useMutation({
     mutationFn: comeleteOnBoarding,
     onSuccess: () => {
@@ -46,8 +46,8 @@ const OnboardingPage = () => {
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+    const randomSeed = Math.random().toString(36).substring(7);
+    const randomAvatar = `https://api.dicebear.com/9.x/adventurer/png?seed=${randomSeed}`;
 
     setFormState({ ...formState, profilePic: randomAvatar });
     toast.success("Random profile picture generated!");

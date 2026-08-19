@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router";
 import HomePage from "./pages/HomePage";
+import FriendsPage from "./pages/FriendsPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import NotificationsPage from "./pages/NotificationsPage";
@@ -34,6 +35,18 @@ function App() {
             isAuthinticated && isOnboarded ? (
               <Layout showSidebar={true}>
                 <HomePage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthinticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/friends"
+          element={
+            isAuthinticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <FriendsPage />
               </Layout>
             ) : (
               <Navigate to={!isAuthinticated ? "/login" : "/onboarding"} />
