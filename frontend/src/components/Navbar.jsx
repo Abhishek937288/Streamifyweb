@@ -49,37 +49,37 @@ const Navbar = () => {
 
           {/* Mobile menu dropdown */}
           {mobileMenuOpen && (
-            <div className="lg:hidden absolute top-16 left-0 right-0 bg-base-200 border-b border-base-300 shadow-lg">
-              <div className="p-4 space-y-2">
+            <div className="lg:hidden absolute top-16 left-0 right-0 bg-base-200 border-b border-base-300 shadow-lg z-40">
+              <div className="flex flex-col p-4 gap-1">
                 <Link
                   to="/"
-                  className={`btn btn-ghost justify-start w-full gap-3 normal-case ${
-                    location.pathname === "/" ? "btn-active" : ""
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname === "/" ? "bg-primary/10 text-primary" : "text-base-content hover:bg-base-300/50"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span>Home</span>
+                  Home
                 </Link>
                 <Link
                   to="/friends"
-                  className={`btn btn-ghost justify-start w-full gap-3 normal-case ${
-                    location.pathname === "/friends" ? "btn-active" : ""
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname === "/friends" ? "bg-primary/10 text-primary" : "text-base-content hover:bg-base-300/50"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span>Friends</span>
+                  Friends
                 </Link>
                 <Link
                   to="/notifications"
-                  className={`btn btn-ghost justify-start w-full gap-3 normal-case ${
-                    location.pathname === "/notifications" ? "btn-active" : ""
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname === "/notifications" ? "bg-primary/10 text-primary" : "text-base-content hover:bg-base-300/50"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span>Notifications</span>
+                  Notifications
                 </Link>
-                <div className="btn btn-ghost justify-start w-full gap-3 normal-case">
-                  <ThemeSelector />
+                <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-base-content">
+                  <ThemeSelector inline />
                   <span>Theme</span>
                 </div>
               </div>
