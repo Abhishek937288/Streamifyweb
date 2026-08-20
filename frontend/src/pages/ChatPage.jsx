@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import useAuthUser from "../hooks/useAuth.User";
 import { useQuery } from "@tanstack/react-query";
@@ -6,24 +6,18 @@ import { getStreamToken } from "../lib/api";
 import ChatLoader from "../components/ChatLoader";
 import {
   Channel,
-  ChannelHeader,
   Chat,
   MessageInput,
   MessageList,
   Thread,
-  Window,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
-import CallButton from "../components/CallButton";
+import { useChatStore } from "../store/useChatStore";
 import {
   ArrowLeftIcon,
-  VideoIcon,
-  PhoneIcon,
   MoreVerticalIcon,
-  SmileIcon,
   PaperclipIcon,
-  SendIcon,
 } from "lucide-react";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
@@ -35,12 +29,11 @@ const ChatPage = () => {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const fileInputRef = useRef(null);
 
   const { authUser } = useAuthUser();
 
-  const {
-    data: tokenData,
-  } = useQuery({
+  const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getStreamToken,
     enabled: !!authUser,
@@ -56,7 +49,6 @@ const ChatPage = () => {
     const initChat = async () => {
       if (!tokenData?.token || !authUser) return;
       try {
-        console.log("Initializing stream chat client ....");
         const client = StreamChat.getInstance(STREAM_API_KEY);
         await client.connectUser(
           {
@@ -67,18 +59,15 @@ const ChatPage = () => {
           tokenData.token
         );
         const channelId = [authUser._id, targetUserId].sort().join("-");
-
         const currChannel = client.channel("messaging", channelId, {
           members: [authUser._id, targetUserId],
         });
-
         await currChannel.watch();
-
         setChatClient(client);
         setChannel(currChannel);
       } catch (err) {
-        console.log("Error initializing chat :", err);
-        toast.error(" could not connect to chat please try again")
+        console.log("Error initializing chat:", err);
+        toast.error("Could not connect to chat, please try again");
       } finally {
         setLoading(false);
       }
@@ -86,14 +75,32 @@ const ChatPage = () => {
     initChat();
   }, [tokenData, authUser, targetUserId]);
 
+  const { setHandleVideoCall } = useChatStore();
+
   const handleVideoCall = () => {
     if (channel) {
-      const callUrl = `${window.location.origin}/call/${channel.id}`
+      const callUrl = `${window.location.origin}/call/${channel.id}`;
       channel.sendMessage({
-        text: `I've started a video call. Join here: ${callUrl}`
-      })
-      toast.success("start your video call with this link")
+        text: `I've started a video call. Join here: ${callUrl}`,
+      });
+      toast.success("Video call link sent!");
     }
+  };
+
+  useEffect(() => {
+    if (channel) {
+      setHandleVideoCall(() => handleVideoCall);
+    }
+    return () => setHandleVideoCall(null);
+  }, [channel, setHandleVideoCall]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file && channel) {
+      channel.sendFile(file);
+      toast.success("File attached!");
+    }
+    e.target.value = "";
   };
 
   const CustomChannelHeader = () => {
@@ -102,7 +109,7 @@ const ChatPage = () => {
     const displayImage = otherUser?.image || otherUser?.profilePic;
 
     return (
-      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 h-14 sm:h-16 bg-base-100 border-b border-base-300 sticky top-0 z-10">
+      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 h-14 sm:h-16 bg-base-100 border-b border-base-300 flex-shrink-0">
         {isMobile && (
           <button
             onClick={() => navigate(-1)}
@@ -129,12 +136,6 @@ const ChatPage = () => {
             Online
           </p>
         </div>
-        <button
-          onClick={handleVideoCall}
-          className="btn btn-ghost btn-circle btn-sm text-primary hover:bg-primary/10 flex-shrink-0"
-        >
-          <VideoIcon className="size-4 sm:size-5" />
-        </button>
         <button className="hidden sm:flex btn btn-ghost btn-circle btn-sm flex-shrink-0">
           <MoreVerticalIcon className="size-5" />
         </button>
@@ -142,52 +143,18 @@ const ChatPage = () => {
     );
   };
 
-  const CustomMessageInput = () => {
-    return (
-      <div className="px-4 py-3 bg-base-100 border-t border-base-300">
-        <div className="flex items-center gap-2 bg-base-200 rounded-2xl px-4 py-2 border border-base-300/50 focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/20 transition-all">
-          <button className="btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-base-content">
-            <PaperclipIcon className="size-5" />
-          </button>
-          <MessageInput
-            focus
-            additionalTextareaProps={{
-              placeholder: "Type a message...",
-              className:
-                "w-full bg-transparent border-none outline-none resize-none text-sm placeholder:text-base-content/30",
-            }}
-          />
-          <button className="btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-base-content">
-            <SmileIcon className="size-5" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   if (loading || !chatClient || !channel) return <ChatLoader />;
 
   return (
-    <div className="h-screen flex flex-col bg-base-200">
+    <div className="h-full flex flex-col bg-base-200">
       <Chat client={chatClient}>
         <Channel channel={channel}>
-          <div className="flex-1 flex flex-col h-full w-full bg-base-100 sm:my-4 sm:mx-4 sm:max-w-4xl sm:rounded-2xl overflow-hidden border border-base-300/50 sm:border-base-300/50">
+          <div className="flex-1 flex flex-col h-full w-full bg-base-100 lg:mx-auto lg:max-w-6xl lg:rounded-t-2xl overflow-hidden lg:border lg:border-b-0 lg:border-base-300/50">
             <CustomChannelHeader />
-            <div className="flex-1 overflow-hidden bg-base-100">
+            <div className="flex-1 overflow-y-auto bg-base-100">
               <MessageList
                 className="custom-message-list"
-                messageActions={[
-                  "edit",
-                  "delete",
-                  "flag",
-                  "mute",
-                  "pin",
-                  "quote",
-                  "react",
-                  "retry",
-                  "save",
-                  "share",
-                ]}
+                messageActions={["edit", "delete", "quote", "react", "reply"]}
                 additionalMessageListProps={{
                   style: {
                     padding: "16px",
@@ -196,7 +163,31 @@ const ChatPage = () => {
                 }}
               />
             </div>
-            <CustomMessageInput />
+            <div className="flex-shrink-0 bg-base-100 border-t border-base-300 relative">
+              <div className="flex items-center gap-1 px-4 py-3 sm:px-6 sm:py-4">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="btn btn-ghost btn-circle btn-sm text-base-content/50 hover:text-base-content flex-shrink-0"
+                >
+                  <PaperclipIcon className="size-5" />
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <div className="flex-1">
+                  <MessageInput
+                    focus
+                    emojiPicker
+                    additionalTextareaProps={{
+                      placeholder: "Type a message...",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
             <Thread />
           </div>
         </Channel>
@@ -254,20 +245,18 @@ const ChatPage = () => {
         .custom-message-list .str-chat__message-status {
           margin: 2px 4px 0 0 !important;
         }
-        .custom-message-input .str-chat__message-input {
-          background-color: transparent !important;
-          border: none !important;
-        }
-        .custom-message-input .str-chat__message-input .str-chat__message-input-textarea {
-          background-color: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-        }
-        .str-chat__message-input .str-chat__message-input-trigger {
-          background-color: transparent !important;
-        }
         .custom-message-list .str-chat__avatar--rounded {
           border-radius: 50% !important;
+        }
+        .str-chat .str-chat__message-input {
+          border: none !important;
+          box-shadow: none !important;
+          background: transparent !important;
+          padding: 0 !important;
+        }
+        .str-chat .str-chat__message-input--textarea {
+          border: none !important;
+          box-shadow: none !important;
         }
       `}</style>
     </div>

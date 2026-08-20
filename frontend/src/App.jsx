@@ -91,7 +91,7 @@ function App() {
           path="/chat/:id"
           element={
             isAuthinticated && isOnboarded ? (
-              <Layout showSidebar={false}>
+              <Layout showSidebar={false} fullHeight>
                 <ChatPage />
               </Layout>
             ) : (

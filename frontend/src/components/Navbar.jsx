@@ -3,24 +3,32 @@ import useAuthUser from "../hooks/useAuth.User";
 import { useLocation } from "react-router";
 import useLogout from "../hooks/userLogout.js";
 import { Link } from "react-router";
-
-import { BellIcon, LogOutIcon, ShipWheelIcon, MenuIcon, XIcon } from "lucide-react";
+import {
+  BellIcon,
+  LogOutIcon,
+  ShipWheelIcon,
+  MenuIcon,
+  XIcon,
+  VideoIcon,
+} from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
+import { useChatStore } from "../store/useChatStore";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   const location = useLocation();
-
   const { logoutMutation } = useLogout();
+  const { handleVideoCall } = useChatStore();
+
+  const isChatPage = /^\/chat\//.test(location.pathname);
+
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between w-full">
           {/* left side */}
           <div className="flex items-center gap-3">
-            {/* Mobile hamburger menu */}
             <button
               className="lg:hidden btn btn-ghost btn-circle btn-sm"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -31,8 +39,6 @@ const Navbar = () => {
                 <MenuIcon className="size-5" />
               )}
             </button>
-            
-            {/* Logo - show on all pages */}
             <Link to="/" className="flex items-center gap-2.5">
               <ShipWheelIcon className="size-8 text-primary" />
               <span className="text-xl sm:text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider hidden sm:inline">
@@ -72,12 +78,24 @@ const Navbar = () => {
                 >
                   <span>Notifications</span>
                 </Link>
+                <div className="btn btn-ghost justify-start w-full gap-3 normal-case">
+                  <ThemeSelector />
+                  <span>Theme</span>
+                </div>
               </div>
             </div>
           )}
 
           {/* right side */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {isChatPage && handleVideoCall && (
+              <button
+                onClick={handleVideoCall}
+                className="btn btn-ghost btn-circle btn-sm text-success hover:bg-success/10"
+              >
+                <VideoIcon className="size-5" />
+              </button>
+            )}
             <Link to={"/notifications"} className="hidden sm:flex">
               <button className="btn btn-ghost btn-circle">
                 <BellIcon className="h-5 w-5 text-base-content opacity-70" />
