@@ -6,13 +6,8 @@ export const signup = async (signupData) => {
 };
 
 export const getUser = async () => {
-  try {
-    const res = await axiosInstance.get("/api/auth/me");
-    return res.data;
-  } catch (err) {
-    console.log("error in logout : ", err);
-    return null;
-  }
+  const res = await axiosInstance.get("/api/auth/me");
+  return res.data;
 };
 
 export const comeleteOnBoarding = async (formState) => {

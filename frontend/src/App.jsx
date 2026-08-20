@@ -24,7 +24,7 @@ function App() {
   const isOnboarded = Boolean(authUser?.isOnboarded);
 
   if (isLoading) {
-    return <PageLoader />;
+    return <PageLoader message="Connecting to server..." />;
   }
   return (
     <div className=" h-full" data-theme={theme}>
