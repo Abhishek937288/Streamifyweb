@@ -85,7 +85,7 @@ export const logout = (req, res) => {
   res.clearCookie("jwt", {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
     maxAge: 0,
   });

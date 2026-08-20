@@ -6,15 +6,13 @@ import userRoutes from "./routes/user.route.js";
 import chatRoutes from "./routes/chat.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import path from "path";
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5001;
+
+app.set("trust proxy", 1);
 
 const frontendUrl = process.env.FRONTEND_URL;
-
-const __dirname = path.resolve();
-// to get path of curr working dir
 
 app.use(
   cors({
@@ -36,21 +34,8 @@ app.get("/health", (req, res) => {
 
 connectDb();
 
-// if (process.env.NODE_ENV === "production") {
-//   //This tells Express to serve all the static files (HTML, CSS, JS, images, etc.)
-//   //from the folder frontend/dist
-//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-//     //If someone visits any route (like /dashboard, /chat/123, etc.) that Express doesn’t already know —
-//     //send them the index.html file.
-//   });
-// }
-
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`server is running on port ${port}`);
-  });
-}
+app.listen(port, () => {
+  console.log(`server is running on port ${port}`);
+});
 
 export default app;

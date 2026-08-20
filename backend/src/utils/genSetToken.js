@@ -7,9 +7,8 @@ const genAndSetToken = async (id, res) => {
   res.cookie("jwt", token, {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
-    path:"/" // ✅ now works
-    // ❌ remove domain
+    sameSite: "none",
+    path: "/",
   });
 };
 
