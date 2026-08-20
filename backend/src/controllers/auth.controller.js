@@ -48,9 +48,9 @@ export const signup = async (req, res) => {
     console.log("error while upstream user", err);
   }
 
-  genAndSetToken(newUser._id, res);
+  const token = genAndSetToken(newUser._id, res);
 
-  res.status(201).json({ success: true, user: newUser });
+  res.status(201).json({ success: true, user: newUser, token });
 };
 
 export const login = async (req, res) => {
@@ -75,10 +75,10 @@ export const login = async (req, res) => {
     });
   }
 
-  genAndSetToken(user._id, res);
+  const token = genAndSetToken(user._id, res);
   return res
     .status(200)
-    .json({ data: user, success: true, message: "User login successfully" });
+    .json({ data: user, success: true, message: "User login successfully", token });
 };
 
 export const logout = (req, res) => {

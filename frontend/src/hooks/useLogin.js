@@ -1,4 +1,3 @@
-import React from "react";
 import { login } from "../lib/api.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -6,7 +5,10 @@ const useLogin = () => {
   const queryClient = useQueryClient();
   const loggedUser = useMutation({
     mutationFn: login,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data.token) {
+        localStorage.setItem("jwt", data.token);
+      }
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
   });

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 const secretKey = process.env.secretKey;
 
-const genAndSetToken = async (id, res) => {
+const genAndSetToken = (id, res) => {
   const token = jwt.sign({ id }, secretKey, { expiresIn: "15d" });
 
   res.cookie("jwt", token, {
@@ -10,6 +10,8 @@ const genAndSetToken = async (id, res) => {
     sameSite: "none",
     path: "/",
   });
+
+  return token;
 };
 
 export default genAndSetToken;

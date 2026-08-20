@@ -5,7 +5,10 @@ const useSignUp = () => {
   const queryClient = useQueryClient();
   const signupUser = useMutation({
     mutationFn: signup,
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      if (data.token) {
+        localStorage.setItem("jwt", data.token);
+      }
       try {
         await queryClient.invalidateQueries({ queryKey: ["authUser"] });
       } catch (err) {
