@@ -8,6 +8,10 @@ const useLogout = () => {
     mutationFn: logout,
     onSuccess: () => {
       localStorage.removeItem("jwt");
+      queryClient.setQueryData(["authUser"], null);
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] !== "authUser",
+      });
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success("user Logged out");
     },

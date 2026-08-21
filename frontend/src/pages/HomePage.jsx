@@ -15,6 +15,7 @@ import {
   GlobeIcon,
   UserCheckIcon,
   SparklesIcon,
+  LoaderCircleIcon as LoaderIcon,
 } from "lucide-react";
 import FriendCard from "../components/FriendCard";
 import { getLanguageFlag } from "../lib/languageFlag.jsx";
@@ -40,7 +41,11 @@ const HomePage = () => {
     queryFn: getOutgoingFriendsReqs,
   });
 
-  const { mutate: sendRequestMutation, isPending } = useMutation({
+  const {
+    mutate: sendRequestMutation,
+    isPending,
+    variables: pendingUserId,
+  } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendsReqs"] });
@@ -199,6 +204,7 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {recommendeUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+                const isSendingToThisUser = isPending && pendingUserId === user._id;
                 return (
                   <div
                     className="group card bg-base-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300 border border-base-300/50 hover:-translate-y-0.5"
@@ -248,15 +254,22 @@ const HomePage = () => {
                         className={`btn w-full gap-2 ${
                           hasRequestBeenSent
                             ? "btn-disabled btn-ghost"
-                            : "btn-primary shadow-lg shadow-primary/20"
+                            : isSendingToThisUser
+                              ? "btn-primary loading"
+                              : "btn-primary shadow-lg shadow-primary/20"
                         }`}
                         onClick={() => sendRequestMutation(user._id)}
-                        disabled={hasRequestBeenSent || isPending}
+                        disabled={hasRequestBeenSent || isSendingToThisUser}
                       >
                         {hasRequestBeenSent ? (
                           <>
                             <CheckCircleIcon className="size-4" />
                             Request Sent
+                          </>
+                        ) : isSendingToThisUser ? (
+                          <>
+                            <LoaderIcon className="size-4 animate-spin" />
+                            Sending Request...
                           </>
                         ) : (
                           <>
